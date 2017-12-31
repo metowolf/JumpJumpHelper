@@ -118,7 +118,7 @@ for ($id = 0; ; $id++) {
 	imagefilledellipse($image, $ty, $tx, 10, 10, 0xFF0000);
 	imagepng($image, sprintf("screen/%05d.png", $id));
     // 计算按压时间
-	$time = sqrt(pow($tx - $sx, 2) + pow($ty - $sy, 2)) * PRESS_TIME;
+	$time = pow(pow($tx - $sx, 2) + pow($ty - $sy, 2), 0.425) * PRESS_TIME;
 	$time = round($time);
     echo sprintf("time: %f\n", $time);
 	press($time);
