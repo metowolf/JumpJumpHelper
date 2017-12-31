@@ -30,28 +30,40 @@ function getStart() {
 function getEnd() {
 	global $image;
 	global $sx, $sy;
+	$l_r    = 0;
+	$cnt    = 0;
 	$width  = imagesx($image);
 	$height = imagesy($image);
 	for ($i = $height / 3; $i < $sx; $i++) {
 		$demo  = imagecolorat($image, 0, $i);
-		$count = 0;
-		for ($j = 0; $j < $width; $j++) {
-			$c = imagecolorat($image, $j, $i);
+		for ($l = 0; $l < $width; $l++) {
+			$c = imagecolorat($image, $l, $i);
 			if (!similar($c, $demo)) {
-				$count++;
-			} else {
-				if ($count > BODY_WIDTH * 1.1) {
-					$x = $i;
-					$y = $j - $count / 2;
-					if (abs($y - $sy) > 20) {
-						return [$x, $y];
+				$r = $l;
+				while($r+1 < $width && !similar(imagecolorat($image, $r+1, $i), $demo)){
+					$r++;
+				}
+				if (abs(($l + $r) / 2 - $sy) > 20) {
+					if (!isset($mid)) $mid = ($l + $r) / 2;
+					if ($r - $l > BODY_WIDTH * 1.1){
+						if ($r <= $l_r) {
+							$cnt ++;
+							if ($cnt == 3) {
+								return [$i, round($mid)];
+							}
+						}
+						else {
+							$cnt = 0;
+						}
+						$l_r = $r;
 					}
 				}
-				$count = 0;
+				$l = $r;
 			}
 		}
 	}
-	return [0, 0];
+
+	return [$sx - round(abs($mid-$sy)/sqrt(3)), round($mid)];;
 }
 
 $cheet = [
@@ -107,7 +119,7 @@ for ($id = 0; ; $id++) {
 	imagepng($image, sprintf("screen/%05d.png", $id));
     // 计算按压时间
 	$time = sqrt(pow($tx - $sx, 2) + pow($ty - $sy, 2)) * PRESS_TIME;
-	$time = round(max(300, $time));
+	$time = round($time);
     echo sprintf("time: %f\n", $time);
 	press($time);
     // 等待下一次截图
