@@ -107,7 +107,7 @@ for ($id = 0; ; $id++) {
 	imagepng($image, sprintf("screen/%05d.png", $id));
     // 计算按压时间
 	$time = sqrt(pow($tx - $sx, 2) + pow($ty - $sy, 2)) * PRESS_TIME;
-	$time = round(max(200, $time));
+	$time = round(max(300, $time));
     echo sprintf("time: %f\n", $time);
 	press($time);
     // 等待下一次截图
