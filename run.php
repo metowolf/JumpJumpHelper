@@ -60,7 +60,7 @@ function getEnd() {
 				}
 				if (abs(($l + $r) / 2 - $sy) > 20) {
 					if (!isset($mid)) $mid = ($l + $r) / 2;
-					if ($r - $l > BODY_WIDTH * 1.1){
+					if ($r - $l > BODY_WIDTH){
 						if ($r <= $l_r) {
 							$cnt ++;
 							if ($cnt == 3) {
@@ -89,7 +89,7 @@ function screencap() {
 }
 
 function press($time) {
-    system('adb shell input swipe 500 1600 500 1601 ' . $time);
+    system('adb shell input swipe 320 410 320 410 ' . $time);
 }
 
 for ($id = 0; ; $id++) {
