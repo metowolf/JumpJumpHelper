@@ -58,7 +58,7 @@ function getEnd() {
 				while($r+1 < $width && !similar(imagecolorat($image, $r+1, $i), $demo)){
 					$r++;
 				}
-				if (abs(($l + $r) / 2 - $sy) > BODY_WIDTH) {
+				if (abs(($l + $r) / 2 - $sy) > BODY_WIDTH * 0.5) {
 					if ($r - $l > BODY_WIDTH * 0.9){
                         if (!isset($mid)) $mid = ($l + $r) / 2;
 						if ($r <= $l_r) {
