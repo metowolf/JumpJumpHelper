@@ -50,7 +50,7 @@ function getEnd() {
 	$width  = imagesx($image);
 	$height = imagesy($image);
 	for ($i = $height / 3; $i < $sx; $i++) {
-		$demo  = imagecolorat($image, 0, $i);
+		$demo  = imagecolorat($image, $width - 1, $i);
 		for ($l = 0; $l < $width; $l++) {
 			$c = imagecolorat($image, $l, $i);
 			if (!similar($c, $demo)) {
@@ -58,9 +58,9 @@ function getEnd() {
 				while($r+1 < $width && !similar(imagecolorat($image, $r+1, $i), $demo)){
 					$r++;
 				}
-				if (abs(($l + $r) / 2 - $sy) > 20) {
-					if (!isset($mid)) $mid = ($l + $r) / 2;
-					if ($r - $l > BODY_WIDTH){
+				if (abs(($l + $r) / 2 - $sy) > BODY_WIDTH) {
+					if ($r - $l > BODY_WIDTH * 0.9){
+                        if (!isset($mid)) $mid = ($l + $r) / 2;
 						if ($r <= $l_r) {
 							$cnt ++;
 							if ($cnt == 3) {
@@ -109,7 +109,7 @@ for ($id = 0; ; $id++) {
 	imagepng($image, sprintf("screen/%05d.png", $id));
     // 计算按压时间
 	$dist = sqrt(pow($tx - $sx, 2) + pow($ty - $sy, 2));
-	$time = pow($dist, 0.83676) * PRESS_TIME;
+	$time = pow($dist, PRESS_EXP) * PRESS_TIME;
 	$time = round($time);
     echo sprintf("dist: %f, time: %f\n", $dist, $time);
 	press($time);
