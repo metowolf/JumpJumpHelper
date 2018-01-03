@@ -89,7 +89,13 @@ function screencap() {
 }
 
 function press($time) {
-    system('adb shell input swipe 320 410 320 410 ' . $time);
+    // 随机按下和滑动抬起，模拟手指
+    $px = rand(300,400);
+    $py = rand(400,600);
+    $ux = $px + rand(1,10);
+    $uy = $py + rand(1,10);
+    $swipe = sprintf("%s %s %s %s", $px, $py, $ux, $uy);
+    system('adb shell input swipe ' . $swipe . ' ' . $time);
 }
 
 for ($id = 0; ; $id++) {
