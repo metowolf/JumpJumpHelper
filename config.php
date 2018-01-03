@@ -10,9 +10,10 @@ define('PRESS_TIME', 4.01950169);
  */
 define('PRESS_EXP', 0.842225);
 /**
- * 睡眠时间
+ * 睡眠时间，随机延迟范围
  */
-define('SLEEP_TIME', 1.5);
+define('SLEEP_TIME_MIN', 1.5);
+define('SLEEP_TIME_MAX', 2.0);
 /**
  * 角色宽度，根据需要调节
  */
