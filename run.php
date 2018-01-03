@@ -113,6 +113,8 @@ for ($id = 0; ; $id++) {
 	$time = round($time);
     echo sprintf("dist: %f, time: %f\n", $dist, $time);
 	press($time);
-    // 等待下一次截图
-	sleep(SLEEP_TIME);
+    // 等待下一次截图，随机延迟
+    $sleep = SLEEP_TIME_MIN+((SLEEP_TIME_MAX-SLEEP_TIME_MIN)*rand(0,10)*0.1);
+    echo sprintf(", sleep: %f\n",$sleep);
+    sleep($sleep);
 }
