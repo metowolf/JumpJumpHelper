@@ -89,11 +89,11 @@ function screencap() {
 }
 
 function press($time) {
-    // 随机按下和滑动抬起，模拟手指
+    // 随机点按下和稍微挪动抬起，模拟手指
     $px = rand(300,400);
     $py = rand(400,600);
-    $ux = $px + rand(1,10);
-    $uy = $py + rand(1,10);
+    $ux = $px + rand(-10,10);
+    $uy = $py + rand(-10,10);
     $swipe = sprintf("%s %s %s %s", $px, $py, $ux, $uy);
     system('adb shell input swipe ' . $swipe . ' ' . $time);
 }
@@ -115,10 +115,13 @@ for ($id = 0; ; $id++) {
 	imagepng($image, sprintf("screen/%05d.png", $id));
     // 计算按压时间
 	$dist = sqrt(pow($tx - $sx, 2) + pow($ty - $sy, 2));
-	$time = pow($dist, PRESS_EXP) * PRESS_TIME;
-	$time = round($time);
-    echo sprintf("dist: %f, time: %f\n", $dist, $time);
-	press($time);
+    // 2.5D距离修正
+    $trdeg = rad2deg(asin(abs($tx - $sx) / $dist));
+    $dist_fix = $dist * sin(deg2rad(150 - $trdeg));
+    $time = pow($dist_fix, PRESS_EXP) * PRESS_TIME;
+    $time = round($time);
+    echo sprintf("dist: %f, dist_fix: %f, trdeg: %f, time: %f", $dist, $dist_fix, $trdeg, $time);
+    press($time);
     // 等待下一次截图，随机延迟
     $sleep = SLEEP_TIME_MIN+((SLEEP_TIME_MAX-SLEEP_TIME_MIN)*rand(0,10)*0.1);
     echo sprintf(", sleep: %f\n",$sleep);
