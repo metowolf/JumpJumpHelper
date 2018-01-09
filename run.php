@@ -1,4 +1,5 @@
 <?php
+//error_reporting(0);
 
 require 'config.php';
 
@@ -82,10 +83,12 @@ function getEnd() {
 }
 
 function screencap() {
-    ob_start();
+  ob_start();
+
 	system('adb shell screencap -p /sdcard/screen.png');
 	system('adb pull /sdcard/screen.png .');
-    ob_end_clean();
+
+  ob_end_clean();
 }
 
 function press($time) {
@@ -99,31 +102,40 @@ function press($time) {
 }
 
 for ($id = 0; ; $id++) {
-    echo sprintf("#%05d: ", $id);
+  echo sprintf("#%05d: ", $id);
     // 截图
 	screencap();
     // 获取坐标
 	$image = imagecreatefrompng('screen.png');
 	list($sx, $sy) = getStart();
 	list($tx, $ty) = getEnd();
-    if ($sx == 0) break;
+
+  if ($sx == 0) break;
+
 	echo sprintf("(%d, %d) -> (%d, %d) ", $sx, $sy, $tx, $ty);
     // 图像描点
 	imagefilledellipse($image, $sy, $sx, 10, 10, 0xFF0000);
 	imagefilledellipse($image, $ty, $tx, 10, 10, 0xFF0000);
-	imagepng($image, 'screen.scan.png');
-	imagepng($image, sprintf("screen/%05d.png", $id));
+
+	//imagepng($image, 'screen.scan.png');
+	 //引用绝对路径，防止 报错 / screen目录 下无截图
+	imagepng($image, sprintf(dirname(__FILE__)."/screen/%05d.png", $id));
+
     // 计算按压时间
 	$dist = sqrt(pow($tx - $sx, 2) + pow($ty - $sy, 2));
-    // 2.5D距离修正
-    $trdeg = rad2deg(asin(abs($tx - $sx) / $dist));
-    $dist_fix = $dist * sin(deg2rad(150 - $trdeg));
-    $time = pow($dist_fix, PRESS_EXP) * PRESS_TIME;
-    $time = round($time);
-    echo sprintf("dist: %f, dist_fix: %f, trdeg: %f, time: %f", $dist, $dist_fix, $trdeg, $time);
-    press($time);
-    // 等待下一次截图，随机延迟
-    $sleep = SLEEP_TIME_MIN+((SLEEP_TIME_MAX-SLEEP_TIME_MIN)*rand(0,10)*0.1);
-    echo sprintf(", sleep: %f\n",$sleep);
-    sleep($sleep);
+
+  // 2.5D距离修正
+  $trdeg = rad2deg(asin(abs($tx - $sx) / $dist));
+
+  $dist_fix = $dist * sin(deg2rad(150 - $trdeg));
+  $time = pow($dist_fix, PRESS_EXP) * PRESS_TIME;
+  $time = round($time);
+  echo sprintf("dist: %f, dist_fix: %f, trdeg: %f, time: %f", $dist, $dist_fix, $trdeg, $time);
+  press($time);
+
+  // 等待下一次截图，随机延迟
+  $sleep = SLEEP_TIME_MIN+((SLEEP_TIME_MAX-SLEEP_TIME_MIN)*rand(0,10)*0.1);
+
+  echo sprintf(", sleep: %f\n",$sleep);
+  sleep($sleep);
 }
